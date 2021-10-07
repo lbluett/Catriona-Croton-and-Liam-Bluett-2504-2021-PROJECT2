@@ -3,16 +3,18 @@
 ############################
 
 # struct for general parameters for the park for each scenario
-struct NetworkParameters
+
+# Code from Project 2 sheet
+@with_kw struct NetworkParameters
     L::Int #The number of queues in the park
-    gamma_shape::Float64 # shape value for gamma distribution
-    λ::Float64 # external arrival rate to the park
-    η::Float64 # move rate between stations
-    μ_vector::Vector{Float64} # list of the rates of service in each of the queues
-    p_matrix::Array{Float64} # routing matrix
-    q_matrix::Array{Float64} # overflow matrix
-    p_e::Vector{Float64} # probability vector for external arrivals
-    K::Vector{Int} # vector of buffer capacities for each queue
+    gamma_shape::Float64 #This is constant for all scenarios at 3.0
+    λ::Float64 # external arrival rate to the park, undefined for the scenarios since it is varied
+    η::Float64 # move rate between stations, assumed constant for all scenarios at 4.0
+    μ_vector::Vector{Float64} #service rates for each of the queues
+    P::Matrix{Float64} #routing matrix
+    Q::Matrix{Float64} #overflow matrix
+    p_e::Vector{Float64} #external arrival distribution
+    K::Vector{Int} # vector of buffer capacities fro each queue, -1 means infinity 
 end
 
 # struct for network states
