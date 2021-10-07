@@ -1,4 +1,6 @@
 # First scenario
+# sequential (tandem) queues, as q1 goes to q2 to q3
+# if overflows, leaves the system
 
 scenario1 = NetworkParameters(  L=3, 
                                 gamma_shape = 3.0, 
