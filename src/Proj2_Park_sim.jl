@@ -6,7 +6,7 @@
 #############################################################################
 #############################################################################
 
-using DataStructures, Distributions, StatsBase, Random, Plots
+using DataStructures, Distributions, StatsBase, Random, Plots, Parameters, LinearAlgebra
 
 import Base: isless
 
