@@ -1,6 +1,7 @@
 # First scenario
 # sequential (tandem) queues, as q1 goes to q2 to q3
 # if overflows, leaves the system
+# NOTE: this result should be the same as using the tandem code from Prac F - use to check
 
 scenario1 = NetworkParameters(  L=3, 
                                 gamma_shape = 3.0, 
