@@ -18,6 +18,8 @@ end
 mutable struct ParkState <: State
     station_queues::Vector{Int} # Should be initialized to zeros[L]
     params::ParkParameters
+    total_inside::Int
+    # TOTAL PEOPLE COUNT - STATION QUEUES SUM = PEOPLE ORBITTING
     # Perhaps initialising an array of size L to indicate the number of people in each queue.
     
 end
@@ -31,8 +33,9 @@ A convenience function to make a Gamma distribution with desired rate (inverse o
 """
 rate_scv_gamma(desired_rate::Float64, desired_scv::Float64) = Gamma(1/desired_scv, desired_scv/desired_rate)
 
-next_arrival_time(s::State) = rand(rate_scv_gamma(s.params.λ, s.params.gamma_scv))
+next_arrival_time(s::State) = rand(rate_scv_gamma(s.params.λ, s.params.gamma_scv)) # Cat, could you verify the mathematical validity of the parameters? I think it's right.
 
 function process_event(time::Float64, state::State, arrival_event::ExternalArrivalEvent)
-    state.station_queues
+    #draw from p
+    state.station_queues[p] += 1
 end
