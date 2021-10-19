@@ -102,7 +102,8 @@ function external_arrival_function(L::Int, p_e::Vector)
 end
 
 function routing_function(l::Int, Q::Matrix{Float64})
-    return sample(1:L+1, weights(Q[l, :].push!(1 - +(Q[l, :]))))
+    return sample(1:L+1, weights(push!(Q[l, :], 1 - sum(Q[l, :]))))
+    # If returned L+1, you must exit.
     
 end
 ############################
