@@ -1,3 +1,4 @@
 # Catriona-Croton-and-Liam-Bluett-2504-2021-PROJECT2
+https://courses.smp.uq.edu.au/MATH2504/assessment_html/project2.html
 
-Here we should not forget to have a 'how-to-run' section as well as format this correcty (I can't right now as the course site is down).
+How to run:
