@@ -127,23 +127,25 @@ end
 
 #This function runs a long simulation with warm up time, and records integral of move
 function do_experiment_long(scenario::NetworkParameters
-    ; warm_up_time = 10.0^5, # change back to 10.0^5
-    max_time = 10.0^7)     # change back to 10.0^7
+    ; warm_up_time = 10.0^2, # change back to 10.0^5
+    max_time = 10.0^3)     # change back to 10.0^7
 
-move_integral = 0.0
-last_time = 0.0
+    move_integral = 0.0
+    last_time = 0.0
 
-# function to record mean number in queues
-function record_integral(time::Float64, state::NetworkState) 
-    (time ≥ warm_up_time) && (move_integral += (state.move/state.in_park)*(time-last_time)) #Use a warmup time
-    last_time = time
-    return nothing
-end
+    # function to record mean number in queues
+    function record_integral(time::Float64, state::NetworkState) 
+        if state.in_park > 0
+            (time ≥ warm_up_time) && (move_integral += (state.move/state.in_park)*(time-last_time)) #Use a warmup time
+        end
+        last_time = time
+        return nothing
+    end
 
-init_queues = fill(0, scenario.L)
-do_sim(NetworkState(init_queues, 0, 0, 0, 0, 0, 0, scenario), 
-    TimedEvent(ExternalArrivalEvent(),0.0), max_time = max_time, call_back = record_integral)
-    move_integral/max_time, scenario
+    init_queues = fill(0, scenario.L)
+    do_sim(NetworkState(init_queues, 0, 0, 0, 0, 0, 0, scenario), 
+        TimedEvent(ExternalArrivalEvent(),0.0), max_time = max_time, call_back = record_integral)
+        move_integral/max_time, scenario
 end
 
 # with lambda = 0.75 - see Provided_Parameters
