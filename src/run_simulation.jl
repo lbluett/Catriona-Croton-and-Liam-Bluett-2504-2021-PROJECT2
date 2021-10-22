@@ -125,6 +125,55 @@ function do_experiment_long(scenario::NetworkParameters
 end
 =#
 
+#  Function v2 for calc integral of move - checking using piazza suggestion below
+#This function runs a long simulation with warm up time, and records integral of move
+#https://piazza.com/class/kr355m6ajl25er?cid=407
+
+function do_experiment_long(scenario::NetworkParameters
+        ; warm_up_time = 10.0^5, # change back to 10.0^5
+        max_time = 10.0^7)     # change back to 10.0^7
+
+        orbiting = 0.0
+        total = 0.0
+        last_time = 0.0
+
+    # function to record mean number in queues
+    function record_integral(time::Float64, state::NetworkState) 
+        (time ≥ warm_up_time) && (orbiting += state.move*(time-last_time))
+        (time ≥ warm_up_time) && (total += state.in_park*(time-last_time))
+        last_time = time
+        return nothing
+    end
+
+    init_queues = fill(0, scenario.L)
+    do_sim(NetworkState(init_queues, 0, 0, 0, 0, 0, 0, scenario), 
+        TimedEvent(ExternalArrivalEvent(),0.0), max_time = max_time, call_back = record_integral)
+    orbiting/total, scenario
+end
+
+# with lambda = 0.75 - see Provided_Parameters
+println("With lambda = 0.75: ")
+Random.seed!(0)
+integral1, pars1 = do_experiment_long(scenario1)
+println("Scenario 1 park move integrals: ", integral1)
+Random.seed!(0)
+integral2, pars2 = do_experiment_long(scenario2)
+println("Scenario 2 park move integrals: ", integral2)
+Random.seed!(0)
+integral3, pars3 = do_experiment_long(scenario3)
+println("Scenario 3 park move integrals: ", integral3)
+Random.seed!(0)
+integral4, pars4 = do_experiment_long(scenario4)
+println("Scenario 4 park move integrals: ", integral4) 
+Random.seed!(0)
+integral5, pars5 = do_experiment_long(scenario5)
+println("Scenario 5 park move integrals: ", integral5)
+
+
+
+# DELETE below code before submission of Project2
+
+# Do NOT use function v1
 #=  Function v1 for calc integral of move - checking below using v2 from piazza suggestion
 #This function runs a long simulation with warm up time, and records integral of move
 function do_experiment_long(scenario::NetworkParameters
@@ -148,53 +197,4 @@ function do_experiment_long(scenario::NetworkParameters
         TimedEvent(ExternalArrivalEvent(),0.0), max_time = max_time, call_back = record_integral)
     move_integral/max_time, scenario
 end
-=#
-
-
-#  Function v2 for calc integral of move - checking using piazza suggestion below
-#This function runs a long simulation with warm up time, and records integral of move
-#https://piazza.com/class/kr355m6ajl25er?cid=407
-
-function do_experiment_long(scenario::NetworkParameters
-        ; warm_up_time = 10.0^3, # change back to 10.0^5
-        max_time = 10.0^5)     # change back to 10.0^7
-
-        orbiting = 0.0
-        total = 0.0
-        last_time = 0.0
-
-    # function to record mean number in queues
-    function record_integral(time::Float64, state::NetworkState) 
-        if state.in_park > 0
-            (time ≥ warm_up_time) && (orbiting += (state.move)*(time-last_time))
-            (time ≥ warm_up_time) && (total += (state.in_park)*(time-last_time))
-        end
-        last_time = time
-        return nothing
-    end
-
-    init_queues = fill(0, scenario.L)
-    do_sim(NetworkState(init_queues, 0, 0, 0, 0, 0, 0, scenario), 
-        TimedEvent(ExternalArrivalEvent(),0.0), max_time = max_time, call_back = record_integral)
-    orbiting/total, scenario
-end
-
-# with lambda = 0.75 - see Provided_Parameters
-println("With lambda = 0.75: ")
-Random.seed!(0)
-integral1, pars1 = do_experiment_long(scenario1)
-println("Scenario 1 park move integrals: ", integral1)
-#=
-Random.seed!(0)
-integral2, pars2 = do_experiment_long(scenario2)
-println("Scenario 2 park move integrals: ", integral2)
-Random.seed!(0)
-integral3, pars3 = do_experiment_long(scenario3)
-println("Scenario 3 park move integrals: ", integral3)
-Random.seed!(0)
-integral4, pars4 = do_experiment_long(scenario4)
-println("Scenario 4 park move integrals: ", integral4) 
-Random.seed!(0)
-integral5, pars5 = do_experiment_long(scenario5)
-println("Scenario 5 park move integrals: ", integral5)
 =#
