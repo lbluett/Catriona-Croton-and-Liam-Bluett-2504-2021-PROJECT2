@@ -12,7 +12,7 @@ function process_event end # This defines a function with zero methods
 Return an event that ends the simulation.
 """
 function process_event(time::Float64, state::State, es_event::EndSimEvent)
-    println("Ending simulation at time $time.")
+    #println("Ending simulation at time $time.")
     return []
 end
 
