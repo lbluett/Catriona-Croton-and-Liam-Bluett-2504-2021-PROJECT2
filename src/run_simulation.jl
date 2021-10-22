@@ -120,9 +120,7 @@ end
 #This function runs a long simulation with warm up time, and records integral of move
 #https://piazza.com/class/kr355m6ajl25er?cid=407
 
-function do_experiment_long(scenario::NetworkParameters
-        ; warm_up_time = 10.0^5, # change back to 10.0^5
-        max_time = 10.0^7)     # change back to 10.0^7
+function do_experiment_long(scenario::NetworkParameters; warm_up_time = 10.0^5, max_time = 10.0^7)  
 
         orbiting = 0.0
         total = 0.0
@@ -137,8 +135,9 @@ function do_experiment_long(scenario::NetworkParameters
     end
 
     init_queues = fill(0, scenario.L)
-    do_sim(NetworkState(init_queues, 0, 0, 0, 0, 0, 0, scenario), 
-        TimedEvent(ExternalArrivalEvent(),0.0), max_time = max_time, call_back = record_integral)
+    empty_dict = Dict()
+
+    do_sim(NetworkState(init_queues, 0, 0, empty_dict, 0, scenario), TimedEvent(ExternalArrivalEvent(),0.0), max_time = max_time, call_back = record_integral)
     orbiting/total, scenario
 end
 

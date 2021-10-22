@@ -21,13 +21,11 @@ end
 
 # struct for network states
 mutable struct NetworkState <: State
-    queues::Vector{Int} #vector for the number of customers in each queue, initialize to zeros[L]
+    queues::Vector{Vector{Int}} # vector containing vectors which represent individual jobs
     in_park::Int # Counter, counts the total number of people in the system
     number_in_queue::Int # Counter, counts the total number in queues (not served yet)
-    service::Int # Counter, counts the number in service
-    move::Int # Counter, number moving between queues
-    overflow::Int # Counter, number overflowed
-    left::Int # Counter, number left the park
+    arrival_times::Dict{Int, Float64} # key: ID, value: arrival time
+    total_entered::Int # Counts the total number of people who enter, also used as the ID.
     params::NetworkParameters #The parameters of the park queueing system
 end
 
