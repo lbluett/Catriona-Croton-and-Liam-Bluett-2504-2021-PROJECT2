@@ -7,7 +7,7 @@
 abstract type State end
 
 # Code from Project 2 sheet
-@with_kw struct NetworkParameters
+@with_kw mutable struct NetworkParameters
     L::Int #The number of queues in the park
     gamma_scv::Float64 #This is constant for all scenarios at 3.0
     λ::Float64 # external arrival rate to the park, undefined for the scenarios since it is varied

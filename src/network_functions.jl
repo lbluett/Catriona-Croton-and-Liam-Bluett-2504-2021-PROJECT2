@@ -6,13 +6,6 @@
 ### Miscellaneous functions
 
 """
- Use Mersenne Twister as RNG algorithm
-    - will allow changes in λ and scenarios to be more apparent
-"""
-rng = MersenneTwister(27)
-
-
-"""
  Function to make a Gamma distribution with desired rate (inverse of shape) and SCV
 """
 rate_scv_gamma(desired_rate::Float64, desired_scv::Float64) = Gamma(1/desired_scv, desired_scv/desired_rate)
@@ -52,3 +45,11 @@ routing_function(L::Int, q::Int, P::Matrix{Float64}) = sample(1:L+1, weights(pus
 
 # function to return which queue to join or if leave when overflow, according to Q matrix
 overflow_function(L::Int, q::Int, Q::Matrix{Float64}) = sample(1:L+1, weights(push!(Q[q, :], 1 - sum(Q[q, :]))))
+  
+#= DELETE 
+"""
+ Use Mersenne Twister as RNG algorithm
+    - will allow changes in λ and scenarios to be more apparent
+"""
+rng = MersenneTwister(27)
+=#

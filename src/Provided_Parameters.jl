@@ -1,6 +1,9 @@
 # Parameters for scenarios 1, 2, 3, 4, 5 for Project 2
 #For convenience they are stored in a struct, NetworkParameters
 
+# specify the range of lambda values
+lambda = append!(collect(0.0:0.2:3.0), collect(4.0:1.0:10.0))
+
 ############################
 scenario1 = NetworkParameters(  L=3, 
                                 gamma_scv = 3.0, 
@@ -9,10 +12,8 @@ scenario1 = NetworkParameters(  L=3,
                                 μ_vector = ones(3),
                                 P = [0 1.0 0;
                                     0 0 1.0;
-                                    1.0 0 0],
-                                Q = [1.0 0 0;
-                                1.0 0 0;
-                                1.0 0 0],
+                                    0 0 0],
+                                Q = zeros(3,3),
                                 p_e = [1.0, 0, 0],
                                 K = fill(5,3))
 #@show scenario1
