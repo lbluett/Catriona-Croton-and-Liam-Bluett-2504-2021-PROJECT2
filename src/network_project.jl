@@ -6,7 +6,7 @@
 #############################################################################
 #############################################################################
 
-using DataStructures, Distributions, StatsBase, Random, Plots, Parameters, LinearAlgebra
+using DataStructures, Distributions, StatsBase, Random, Plots, Parameters, LinearAlgebra, Measures
 using Base: Float64
 import Base: isless
 
