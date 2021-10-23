@@ -30,6 +30,8 @@ function do_sim(init_state::State, init_timed_event::TimedEvent
     # Callback at simulation start
     call_back(time, state)
 
+    # sojourn times
+    #sojourn_times = Float64[]
     # The main discrete event simulation loop
     while true
         # Get the next event
@@ -54,6 +56,7 @@ function do_sim(init_state::State, init_timed_event::TimedEvent
         # Callback for each simulation event
         call_back(time, state)
     end
+    return state.sojourn_times
 end
 
 #=
@@ -126,38 +129,40 @@ function do_experiment_long(scenario::NetworkParameters; warm_up_time = 10.0^5, 
         total = 0.0
         last_time = 0.0
 
-    # function to record mean number in queues
-    # function record_integral(time::Float64, state::NetworkState) 
-        # (time ≥ warm_up_time) && (orbiting += state.move*(time-last_time))
-        # (time ≥ warm_up_time) && (total += state.in_park*(time-last_time))
-        # last_time = time
-        # return nothing
-    # end
+    #function to record mean number in queues
+    #function record_integral(time::Float64, state::NetworkState) 
+    #  # (time ≥ warm_up_time) && (orbiting += state.move*(time-last_time))
+    #  # (time ≥ warm_up_time) && (total += state.in_park*(time-last_time))
+    #  # last_time = time
+    #  # return nothing
+    #end
 
     init_queues = fill(Queue{Int}(), scenario.L)
     empty_dict = Dict()
-    sojourn_times = Float64[]
-
-    do_sim(NetworkState(init_queues, 0, empty_dict, 0, sojourn_times, scenario), TimedEvent(ExternalArrivalEvent(),0.0), max_time = max_time, call_back = record_integral)
+    sojourn_array = Float64[]
+    
+    sojourn_times = do_sim(NetworkState(init_queues, 0, empty_dict, 0, sojourn_array, scenario), TimedEvent(ExternalArrivalEvent(),0.0), max_time = max_time)
+    return sojourn_times
 end
 
 # with lambda = 0.75 - see Provided_Parameters
 println("With lambda = 0.75: ")
 Random.seed!(0)
-integral1, pars1 = do_experiment_long(scenario1)
-println("Scenario 1 park move integrals: ", integral1)
-Random.seed!(0)
-integral2, pars2 = do_experiment_long(scenario2)
-println("Scenario 2 park move integrals: ", integral2)
-Random.seed!(0)
-integral3, pars3 = do_experiment_long(scenario3)
-println("Scenario 3 park move integrals: ", integral3)
-Random.seed!(0)
-integral4, pars4 = do_experiment_long(scenario4)
-println("Scenario 4 park move integrals: ", integral4) 
-Random.seed!(0)
-integral5, pars5 = do_experiment_long(scenario5)
-println("Scenario 5 park move integrals: ", integral5)
+output = do_experiment_long(scenario1)
+display(output)
+# println("Scenario 1 park move integrals: ", integral1)
+# Random.seed!(0)
+# integral2, pars2 = do_experiment_long(scenario2)
+# println("Scenario 2 park move integrals: ", integral2)
+# Random.seed!(0)
+# integral3, pars3 = do_experiment_long(scenario3)
+# println("Scenario 3 park move integrals: ", integral3)
+# Random.seed!(0)
+# integral4, pars4 = do_experiment_long(scenario4)
+# println("Scenario 4 park move integrals: ", integral4) 
+# Random.seed!(0)
+# integral5, pars5 = do_experiment_long(scenario5)
+# println("Scenario 5 park move integrals: ", integral5)
 
 
 

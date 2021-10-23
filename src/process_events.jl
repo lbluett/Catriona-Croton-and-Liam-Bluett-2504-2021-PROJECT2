@@ -143,7 +143,7 @@ end
 """
 function process_event(time::Float64, state::State, leave_event::LeaveParkEvent)
     new_timed_events = TimedEvent[]
-    sojourn = time - state.arrival_times(leave_event.id) # If time is the time that this event is occuring.
+    sojourn = time - state.arrival_times[leave_event.id] # If time is the time that this event is occuring.
     push!(state.sojourn_times, sojourn)
     state.in_park -= 1
     return new_timed_events
