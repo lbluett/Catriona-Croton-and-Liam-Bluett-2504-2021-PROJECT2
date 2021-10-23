@@ -60,12 +60,15 @@ function do_sim(init_state::State, init_timed_event::TimedEvent
     end
 end
 
-# Merged function for mean in_park, proportion of jobs in orbit
-
-function do_experiment_long(scenario::NetworkParameters, λ::Float64
-    ; warm_up_time = 10.0^3, # change back to 10.0^5
-    max_time = 10.0^5,       # change back to 10.0^7
-    record = "moving")       # specify what are recording, options are "moving" or "in_park"
+"""
+Function to calculate the Park statistics
+The statistics calculated can be either:
+- mean number of jobs in the park, in which case use record is "in_park"
+- proportion of jobs in orbit in the park (number in orbit/total in park), and use record is "moving"
+"""
+function do_experiment_long(scenario::NetworkParameters, λ::Float64, record::String;
+    warm_up_time = 10.0^3, # change back to 10.0^5
+    max_time = 10.0^5)      # change back to 10.0^7
 
     orbiting = 0.0
     total = 0.0
@@ -103,47 +106,71 @@ function do_experiment_long(scenario::NetworkParameters, λ::Float64
     (call_back == record_prop_moving) && (return orbiting/total, scenario)
 end
 
+"""
+Function to plot the lambda values against the statistics of mean number in park and proportion orbiting jobs in park
+"""
+function plot_stats(scenario::NetworkParameters, title::String, record::String; 
+    lambda_lower_bound = 1.0, lambda_upper_bound = 8.0, step = 0.5)
 
-@show scenario1
+    lambda_values = collect(lambda_lower_bound:step:lambda_upper_bound)
+    #lambda_values = append!(collect(0.2:0.2:0.8), collect(lambda_lower_bound:step:lambda_upper_bound))
+    stat_park = []
 
-lambda_values = collect(0.0:0.5:10.0)
-for i in lambda_values
-    println("With lambda = ", i)
-    Random.seed!(0)
-    in_park, scenario = do_experiment_long(scenario1, i, record = "in_park") 
-    println("Scenario 1 mean number of jobs in park: ", in_park)
-    Random.seed!(0)
-    moving, scenario = do_experiment_long(scenario1, i, record = "moving")
-    println("Scenario 1 proportion of jobs moving: ", moving)
+    # loop to store y values
+    for i in lambda_values
+        #println("With lambda = ", i)
+        Random.seed!(0)
+        each_stat_park, scenario = do_experiment_long(scenario, i, record)
+        push!(stat_park, each_stat_park)
+    end
 
-    Random.seed!(0)
-    in_park, scenario = do_experiment_long(scenario2, i, record = "in_park") 
-    println("Scenario 2 mean number of jobs in park: ", in_park)
-    Random.seed!(0)
-    moving, scenario = do_experiment_long(scenario2, i, record = "moving")
-    println("Scenario 2 proportion of jobs moving: ", moving)
+    # add the zero values for a neat plot
+    if record == "in_park"
+        lambda_values = pushfirst!(lambda_values, 0.0)
+        stat_park = pushfirst!(stat_park, 0.0)
+    end
 
-    Random.seed!(0)
-    in_park, scenario = do_experiment_long(scenario3, i, record = "in_park") 
-    println("Scenario 3 mean number of jobs in park: ", in_park)
-    Random.seed!(0)
-    moving, scenario = do_experiment_long(scenario3, i, record = "moving")
-    println("Scenario 3 proportion of jobs moving: ", moving)
+    # specify the y label
+    (record == "in_park") && (ylabel = "Mean Number of Jobs in Park")
+    (record == "moving") && (ylabel = "Proportion of Park Jobs Orbiting")
 
-    Random.seed!(0)
-    in_park, scenario = do_experiment_long(scenario4, i, record = "in_park") 
-    println("Scenario 4 mean number of jobs in park: ", in_park)
-    Random.seed!(0)
-    moving, scenario = do_experiment_long(scenario4, i, record = "moving")
-    println("Scenario 4 proportion of jobs moving: ", moving)
+    # specify the y lims
+    (record == "in_park") && (ylims = (0, ceil(maximum(stat_park))))
+    (record == "moving") && (ylims = (0, 1.0))
 
-    Random.seed!(0)
-    in_park, scenario = do_experiment_long(scenario5, i, record = "in_park") 
-    println("Scenario 5 mean number of jobs in park: ", in_park)
-    Random.seed!(0)
-    moving, scenario = do_experiment_long(scenario5, i, record = "moving")
-    println("Scenario 5 proportion of jobs moving: ", moving)
+    # plot the values
+    plot(lambda_values, stat_park, c=:blue, 
+        xlabel = "λ Values", 
+        ylabel = ylabel,
+        title = title,
+        xlims = (0, lambda_upper_bound),
+        ylims = ylims,
+        legend = false)
 end
+
+
+p1a = plot_stats(scenario1, "Scenario 1", "in_park", lambda_lower_bound = 0.2, lambda_upper_bound = 3.0, step = 0.2)
+p1b = plot_stats(scenario1, "Scenario 1", "moving", lambda_lower_bound = 0.2, lambda_upper_bound = 3.0, step = 0.2)
+plot!(p1a, p1b, size=(800, 400), legend=:none, margin=5mm)
+
+p2a = plot_stats(scenario2, "Scenario 2", "in_park", lambda_lower_bound = 0.2, lambda_upper_bound = 3.0, step = 0.2)
+p2b = plot_stats(scenario2, "Scenario 2", "moving", lambda_lower_bound = 0.2, lambda_upper_bound = 3.0, step = 0.2)
+plot!(p2a, p2b, size=(800, 400), legend=:none, margin=5mm)
+
+p3a = plot_stats(scenario3, "Scenario 3", "in_park", lambda_lower_bound = 0.2, lambda_upper_bound = 5.0, step = 0.2)
+p3b = plot_stats(scenario3, "Scenario 3", "moving", lambda_lower_bound = 0.2, lambda_upper_bound = 5.0, step = 0.2)
+plot!(p3a, p3b, size=(800, 400), legend=:none, margin=5mm)
+
+p4a = plot_stats(scenario4, "Scenario 4", "in_park", lambda_lower_bound = 0.1, lambda_upper_bound = 1.0, step = 0.1)
+p4b = plot_stats(scenario4, "Scenario 4", "moving", lambda_lower_bound = 0.1, lambda_upper_bound = 1.0, step = 0.1)
+plot!(p4a, p4b, size=(800, 400), legend=:none, margin=5mm)
+
+p5a = plot_stats(scenario5, "Scenario 5", "in_park", lambda_lower_bound = 0.2, lambda_upper_bound = 5.0, step = 0.2)
+p5b = plot_stats(scenario5, "Scenario 5", "moving", lambda_lower_bound = 0.2, lambda_upper_bound = 5.0, step = 0.2)
+plot!(p5a, p5b, size=(800, 400), legend=:none, margin=5mm)
+
+
+
 
 
 # DELETE code below submission of Proj2
@@ -166,9 +193,7 @@ function do_experiment_traj(;n=10,
 end
 
 time, traj, pars = do_experiment_traj()
-=#
 
-#=
 #This function runs a long simulation with warm up time, and records integral of queues
 function do_experiment_long(scenario::NetworkParameters
                             ; warm_up_time = 10.0^5, # change back to 10.0^5
@@ -189,9 +214,7 @@ function do_experiment_long(scenario::NetworkParameters
         TimedEvent(ExternalArrivalEvent(),0.0), max_time = max_time, call_back = record_integral)
     queues_integral/max_time, scenario
 end
-=#
 
-#=
 #This function runs a long simulation with warm up time, and records integral of number of items in park
 function do_experiment_long(scenario::NetworkParameters
         ; warm_up_time = 10.0^5, # change back to 10.0^5
@@ -212,13 +235,11 @@ function do_experiment_long(scenario::NetworkParameters
         TimedEvent(ExternalArrivalEvent(),0.0), max_time = max_time, call_back = record_integral)
     total_inpark__integral/max_time, scenario
 end
-=#
 
 
 #  Function v2 for calc integral of move - checking using piazza suggestion below
 #This function runs a long simulation with warm up time, and records integral of move
 #https://piazza.com/class/kr355m6ajl25er?cid=407
-#=
 function do_experiment_long(scenario::NetworkParameters
         ; warm_up_time = 10.0^3, # change back to 10.0^5
         max_time = 10.0^5)     # change back to 10.0^7
@@ -242,12 +263,10 @@ function do_experiment_long(scenario::NetworkParameters
         TimedEvent(ExternalArrivalEvent(),0.0), max_time = max_time, call_back = record_integral)
     orbiting/total, scenario
 end
-=#
 
 
 # below code has errors
 # lambda = append!(collect(0.0:0.2:3.0), collect(4.0:1.0:10.0))
-#=
 lambda = collect(1.0:1.0:2.0)
 for i in lambda
     Random.seed!(0)
@@ -257,9 +276,8 @@ for i in lambda
     #moving, scenario = do_experiment_long(scenario1, record = "moving")
     #println("Scenario 1 proportion of jobs moving: ", moving)
 end
-=#
 
-#=  Function v1 for calc integral of move - checking below using v2 from piazza suggestion
+# Function v1 for calc integral of move - checking below using v2 from piazza suggestion
 #This function runs a long simulation with warm up time, and records integral of move
 function do_experiment_long(scenario::NetworkParameters
         ; warm_up_time = 10.0^5, # change back to 10.0^5
