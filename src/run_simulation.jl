@@ -127,18 +127,18 @@ function do_experiment_long(scenario::NetworkParameters; warm_up_time = 10.0^5, 
         last_time = 0.0
 
     # function to record mean number in queues
-    function record_integral(time::Float64, state::NetworkState) 
-        (time ≥ warm_up_time) && (orbiting += state.move*(time-last_time))
-        (time ≥ warm_up_time) && (total += state.in_park*(time-last_time))
-        last_time = time
-        return nothing
-    end
+    # function record_integral(time::Float64, state::NetworkState) 
+        # (time ≥ warm_up_time) && (orbiting += state.move*(time-last_time))
+        # (time ≥ warm_up_time) && (total += state.in_park*(time-last_time))
+        # last_time = time
+        # return nothing
+    # end
 
-    init_queues = fill(0, scenario.L)
+    init_queues = fill(Queue{Int}(), scenario.L)
     empty_dict = Dict()
+    sojourn_times = Float64[]
 
-    do_sim(NetworkState(init_queues, 0, 0, empty_dict, 0, scenario), TimedEvent(ExternalArrivalEvent(),0.0), max_time = max_time, call_back = record_integral)
-    orbiting/total, scenario
+    do_sim(NetworkState(init_queues, 0, empty_dict, 0, sojourn_times, scenario), TimedEvent(ExternalArrivalEvent(),0.0), max_time = max_time, call_back = record_integral)
 end
 
 # with lambda = 0.75 - see Provided_Parameters

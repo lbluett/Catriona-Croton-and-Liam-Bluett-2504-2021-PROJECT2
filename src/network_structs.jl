@@ -21,11 +21,11 @@ end
 
 # struct for network states
 mutable struct NetworkState <: State
-    queues::Vector{Vector{Int}} # vector containing vectors which represent individual jobs
+    queues::Vector{Queue{Int}} # vector containing vectors which represent individual jobs
     in_park::Int # Counter, counts the total number of people in the system
-    number_in_queue::Int # Counter, counts the total number in queues (not served yet)
     arrival_times::Dict{Int, Float64} # key: ID, value: arrival time
     total_entered::Int # Counts the total number of people who enter, also used as the ID.
+    sojourn_times::Array{Float64}
     params::NetworkParameters #The parameters of the park queueing system
 end
 
@@ -40,20 +40,25 @@ abstract type Event end
 
 # create the necessary events
 struct ExternalArrivalEvent <: Event end
-struct LeaveParkEvent <: Event end
+struct LeaveParkEvent <: Event 
+    id::Int
+end
 struct LogStateEvent <: Event end
 struct EndSimEvent <: Event end
 
 struct QueueArrivalEvent <: Event
     q::Int # the index of the queue where service started
+    id::Int
 end
 
 struct EndOfServiceAtQueueEvent <: Event
     q::Int #The index of the queue where service finished
+    id::Int
 end
 
 struct OverflowEvent <: Event
     q::Int # The index of the queue where overflowed
+    id::Int
 end
 
 # create struct for timed event
