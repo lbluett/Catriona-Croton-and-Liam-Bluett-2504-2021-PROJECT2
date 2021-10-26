@@ -24,6 +24,7 @@ function do_sim(init_state::State, init_timed_event::TimedEvent
     # The event queue
     priority_queue = BinaryMinHeap{TimedEvent}()
 
+    
     # Put the standard events in the queue
     push!(priority_queue, init_timed_event)
     push!(priority_queue, TimedEvent(EndSimEvent(), max_time))
@@ -77,14 +78,18 @@ function do_experiment_long(scenario::NetworkParameters, λ::Float64;
     warm_up_time = 10.0^2,   # change back to 10.0^5
     max_time = 10.0^3)       # change back to 10.0^7
 
-    init_queues = fill(Queue{Int}(), scenario.L)
+    init_queues = []
+    for _ in 1:scenario.L
+        push!(init_queues, Queue{Int}())
+    end
+
+    #init_queues = fill(Queue{Int}(), scenario.L) pointing to the same queue
     empty_dict = Dict()
     sojourn_array = Float64[]
     
     Random.seed!(0)
     sojourn_times = do_sim(NetworkState(init_queues, 0, empty_dict, 0, sojourn_array, scenario), 
             TimedEvent(ExternalArrivalEvent(),0.0), λ = λ, max_time = max_time)
-
     return sojourn_times
 end
 
@@ -116,7 +121,7 @@ function plot_times(scenario::NetworkParameters, title::String;
     return plot_test
 end
 
-plot_times(scenario4, "Empirical CDF of Sojourn times of Scenario 1")
+plot_times(scenario1, "Empirical CDF of Sojourn times of Scenario 1")
 
 #=
 sojourn_times_scenario1_lambda2 = do_experiment_long(scenario2, 5.0)

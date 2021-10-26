@@ -54,6 +54,7 @@ end
 struct EndOfServiceAtQueueEvent <: Event
     q::Int #The index of the queue where service finished
     id::Int
+    where_come_from::Int # 0 if from external arrival, 1 if from EndOfServiceAtQueueEvent
 end
 
 struct OverflowEvent <: Event
