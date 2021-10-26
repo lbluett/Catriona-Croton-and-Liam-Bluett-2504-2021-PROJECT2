@@ -1,4 +1,4 @@
-include("../src/network_project.jl")
+include("../src/mode1.jl")
 
 include("station_allocation_tests.jl")
 arrival_distribution_test()

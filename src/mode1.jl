@@ -10,7 +10,7 @@ using Base: Float64
 import Base: isless
 
 include("mode1_network_structs.jl")
-include("mode1_network_functions.jl")
+include("network_functions.jl")
 include("mode1_process_events.jl")
 
 """
