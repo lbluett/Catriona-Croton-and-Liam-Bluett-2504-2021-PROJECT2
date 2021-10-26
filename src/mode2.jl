@@ -78,11 +78,12 @@ function do_experiment_long(scenario::NetworkParameters, λ::Float64;
     max_time = 10.0^3)       # change back to 10.0^7
 
     init_queues = fill(Queue{Int}(), scenario.L)
+    init_servers = fill(false, scenario.L)
     empty_dict = Dict()
     sojourn_array = Float64[]
     
     Random.seed!(0)
-    sojourn_times = do_sim(NetworkState(init_queues, 0, empty_dict, 0, sojourn_array, scenario), 
+    sojourn_times = do_sim(NetworkState(init_queues, init_servers, 0, empty_dict, 0, sojourn_array, scenario), 
             TimedEvent(ExternalArrivalEvent(),0.0), λ = λ, max_time = max_time)
 
     return sojourn_times
@@ -100,7 +101,7 @@ function plot_times(scenario::NetworkParameters, title::String;
     step = 1.0)
 
     lambda_values = collect(lambda_lower_bound:step:lambda_upper_bound)
-    xGrid = 0.0:1.0:20.0
+    xGrid = 0.0:0.1:2.0
     
     # to calculate and plot values
     data_collection = [do_experiment_long(scenario, lambda) for lambda in lambda_values]
@@ -116,7 +117,7 @@ function plot_times(scenario::NetworkParameters, title::String;
     return plot_test
 end
 
-plot_times(scenario4, "Empirical CDF of Sojourn times of Scenario 1")
+plot_times(scenario4, "Empirical CDF of Sojourn times of Scenario 4")
 
 #=
 sojourn_times_scenario1_lambda2 = do_experiment_long(scenario2, 5.0)
