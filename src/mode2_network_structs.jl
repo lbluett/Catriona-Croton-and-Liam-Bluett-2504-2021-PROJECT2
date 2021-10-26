@@ -22,6 +22,7 @@ end
 # struct for network states
 mutable struct NetworkState <: State
     queues::Vector{Queue{Int}} # vector containing vectors which represent individual jobs
+    serverBusy::Vector{Bool}    # true or false depending on if the server is busy, one server for each of the queues
     in_park::Int # Counter, counts the total number of people in the system
     arrival_times::Dict{Int, Float64} # key: ID, value: arrival time
     total_entered::Int # Counts the total number of people who enter, also used as the ID.
