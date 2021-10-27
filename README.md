@@ -16,6 +16,7 @@ The plotting function used is called plot_all() and takes the following mandator
     item name - the name of the network parameters (e.g. Scenario 1). This must be a string and so enclosed in "".
 
 There are also optional named arguments, which are:
+
     stats_lambda_lower_bound - the lower bound of the 𝜆 to be used in mode 1 with a default of 0.01
     stats_lambda_upper_bound - the upper bound of the 𝜆 to be used in the mode 1 with a default of 5.01
     stats_lambda_step - the step of the 𝜆 to be used in the mode 1 with a default of 0.2
