@@ -12,19 +12,19 @@ There is one main plotting function used for the simulation, and it will result 
 
 The plotting function used is called *plot_all()* and takes the following mandatory arguments:
 
-    *scenario* - these are the network parameters
-    *item name* - the name of the network parameters (e.g. Scenario 1). This must be a string and so enclosed in "".
+    scenario - these are the network parameters
+    item name - the name of the network parameters (e.g. Scenario 1). This must be a string and so enclosed in "".
 
 There are also optional named arguments, which are:
 
-    *stats_lambda_lower_bound* - the lower bound of the 𝜆 to be used in mode 1 with a default of 0.01
-    *stats_lambda_upper_bound* - the upper bound of the 𝜆 to be used in the mode 1 with a default of 5.01
-    *stats_lambda_step* - the step of the 𝜆 to be used in the mode 1 with a default of 0.2
-    *times_lambda_lower_bound* - the lower bound of the 𝜆 to be used in mode 2 with a default of 1.0
-    *times_lambda_upper_bound* - the upper bound of the 𝜆 to be used in mode 2 with a default of 5.0
-    *times_lambda_step* - the step of the 𝜆 to be used in mode 2 with a default of 1.0
-    *xGrid_step* - the step of the grid used for the x axis in the ECDF in mode 2 with a default is 0.1.
-    *xGrid_upper* - the upper bound of the grid used for the x axis in the ECDF in mode 2, with a default of 30.0.
+    stats_lambda_lower_bound - the lower bound of the 𝜆 to be used in mode 1 with a default of 0.01
+    stats_lambda_upper_bound - the upper bound of the 𝜆 to be used in the mode 1 with a default of 5.01
+    stats_lambda_step - the step of the 𝜆 to be used in the mode 1 with a default of 0.2
+    times_lambda_lower_bound - the lower bound of the 𝜆 to be used in mode 2 with a default of 1.0
+    times_lambda_upper_bound - the upper bound of the 𝜆 to be used in mode 2 with a default of 5.0
+    times_lambda_step - the step of the 𝜆 to be used in mode 2 with a default of 1.0
+    xGrid_step - the step of the grid used for the x axis in the ECDF in mode 2 with a default is 0.1.
+    xGrid_upper - the upper bound of the grid used for the x axis in the ECDF in mode 2, with a default of 30.0.
 
 The lower bound of the xGrid isn't able to be set; it is 0.0.
 
