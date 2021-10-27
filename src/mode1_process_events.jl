@@ -67,7 +67,6 @@ function process_event(time::Float64, state::State, queue_arrival_event::QueueAr
         push!(new_timed_events, TimedEvent(EndOfServiceAtQueueEvent(q), time + next_service_time(state,q)))
         state.number_in_queue -= 1
         state.service += 1
-        #state.queues[q] -= 1
     end
 
     # if the queue is full when arrives, then overflow immediately

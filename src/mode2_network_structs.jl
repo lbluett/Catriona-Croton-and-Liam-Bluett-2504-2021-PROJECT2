@@ -1,6 +1,6 @@
-############################
-#   Overview structs       #
-############################
+########################################################
+#   Overview structs for Mode 2 of the Simulation      #
+########################################################
 
 # struct for general parameters for the park for each scenario
 
@@ -20,12 +20,13 @@ abstract type State end
 end
 
 # struct for network states
-mutable struct NetworkState <: State
+mutable struct Mode2NetworkState <: State
     queues::Vector{Queue{Int}} # vector containing vectors which represent individual jobs
     in_park::Int # Counter, counts the total number of people in the system
     arrival_times::Dict{Int, Float64} # key: ID, value: arrival time
     total_entered::Int # Counts the total number of people who enter, also used as the ID.
     sojourn_times::Array{Float64}
+    move::Int
     params::NetworkParameters #The parameters of the park queueing system
 end
 
@@ -39,25 +40,25 @@ end
 abstract type Event end
 
 # create the necessary events
-struct ExternalArrivalEvent <: Event end
-struct LeaveParkEvent <: Event 
+struct Mode2ExternalArrivalEvent <: Event end
+struct Mode2LeaveParkEvent <: Event 
     id::Int
 end
 struct LogStateEvent <: Event end
 struct EndSimEvent <: Event end
 
-struct QueueArrivalEvent <: Event
+struct Mode2QueueArrivalEvent <: Event
     q::Int # the index of the queue where service started
     id::Int
 end
 
-struct EndOfServiceAtQueueEvent <: Event
+struct Mode2EndOfServiceAtQueueEvent <: Event
     q::Int #The index of the queue where service finished
     id::Int
     where_come_from::Int # 0 if from external arrival, 1 if from EndOfServiceAtQueueEvent
 end
 
-struct OverflowEvent <: Event
+struct Mode2OverflowEvent <: Event
     q::Int # The index of the queue where overflowed
     id::Int
 end

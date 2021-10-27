@@ -1,6 +1,6 @@
-############################
-#   Overview structs       #
-############################
+#######################################################
+#   Overview structs for Mode 1 of the Simulation     #
+#######################################################
 
 # struct for general parameters for the park for each scenario
 
@@ -20,12 +20,13 @@ abstract type State end
 end
 
 # struct for network states
-mutable struct NetworkState <: State
+mutable struct Mode1NetworkState <: State
     queues::Vector{Int} #vector for the number of customers in each queue, initialize to zeros[L]
     in_park::Int # Counter, counts the total number of people in the system
     number_in_queue::Int # Counter, counts the total number in queues (not served yet)
     service::Int # Counter, counts the number in service
     move::Int # Counter, number moving between queues
+    sojourn_times::Int
     overflow::Int # Counter, number overflowed
     left::Int # Counter, number left the park
     params::NetworkParameters #The parameters of the park queueing system

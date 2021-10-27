@@ -89,14 +89,14 @@ function do_experiment_long(scenario::NetworkParameters, λ::Float64, record::St
     init_queues = fill(0, scenario.L)
 
     # function to record mean number in park
-    function record_in_park(time::Float64, state::NetworkState) 
+    function record_in_park(time::Float64, state::Mode1NetworkState) 
         (time ≥ warm_up_time) && (total_inpark_integral += state.in_park*(time-last_time)) #Use a warmup time
         last_time = time
         return nothing
     end
 
     # function to record proportion moving
-    function record_prop_moving(time::Float64, state::NetworkState) 
+    function record_prop_moving(time::Float64, state::Mode1NetworkState) 
         if state.in_park > 0
             (time ≥ warm_up_time) && (orbiting += (state.move)*(time-last_time))
             (time ≥ warm_up_time) && (total += (state.in_park)*(time-last_time))
@@ -110,7 +110,7 @@ function do_experiment_long(scenario::NetworkParameters, λ::Float64, record::St
     (record == "moving") && (call_back = record_prop_moving)
 
     # run the simulation
-    do_sim(NetworkState(init_queues, 0, 0, 0, 0, 0, 0, scenario), 
+    do_sim(Mode1NetworkState(init_queues, 0, 0, 0, 0, 0, 0, 0, scenario), 
         TimedEvent(ExternalArrivalEvent(),0.0), λ = λ, max_time = max_time, warm_up_time = warm_up_time, call_back = call_back)
     
     # return appropriate statistics
@@ -122,15 +122,13 @@ end
 Function to plot the lambda values against the statistics of mean number in park and proportion orbiting jobs in park
 """
 function plot_stats(scenario::NetworkParameters, title::String, record::String; 
-    lambda_lower_bound = 1.0, lambda_upper_bound = 8.0, step = 0.5)
+    lambda_lower_bound = 1.0, lambda_upper_bound = 8.0, lambda_step = 0.5)
 
-    lambda_values = collect(lambda_lower_bound:step:lambda_upper_bound)
-    #lambda_values = append!(collect(0.2:0.2:0.8), collect(lambda_lower_bound:step:lambda_upper_bound))
+    lambda_values = collect(lambda_lower_bound:lambda_step:lambda_upper_bound)
     stat_park = []
 
     # loop to store y values
     for i in lambda_values
-        #println("With lambda = ", i)
         Random.seed!(0)
         each_stat_park, scenario = do_experiment_long(scenario, i, record)
         push!(stat_park, each_stat_park)
@@ -155,6 +153,7 @@ function plot_stats(scenario::NetworkParameters, title::String, record::String;
         xlabel = "λ Values", 
         ylabel = ylabel,
         title = title,
+        titlefontsize = 12,
         xlims = (0, lambda_upper_bound),
         ylims = ylims,
         legend = false)

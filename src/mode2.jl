@@ -6,8 +6,6 @@ include("mode2_network_structs.jl")
 include("network_functions.jl")
 include("mode2_process_events.jl")
 
-include("Provided_Parameters.jl")
-
 """
 The main simulation function gets an initial state and an initial event
 that gets things going. Optional arguments are the λ, maximal time for the
@@ -88,8 +86,8 @@ function do_experiment_long(scenario::NetworkParameters, λ::Float64;
     sojourn_array = Float64[]
     
     Random.seed!(0)
-    sojourn_times = do_sim(NetworkState(init_queues, 0, empty_dict, 0, sojourn_array, scenario), 
-            TimedEvent(ExternalArrivalEvent(),0.0), λ = λ, max_time = max_time)
+    sojourn_times = do_sim(Mode2NetworkState(init_queues, 0, empty_dict, 0, sojourn_array, 0, scenario), 
+            TimedEvent(Mode2ExternalArrivalEvent(),0.0), λ = λ, max_time = max_time)
     return sojourn_times
 end
 
@@ -101,12 +99,14 @@ end
 """
 function plot_times(scenario::NetworkParameters, title::String;
     lambda_lower_bound = 1.0, 
-    lambda_upper_bound = 10.0, 
-    step = 1.0)
+    lambda_upper_bound = 5.0, 
+    lambda_step = 1.0,
+    xGrid_step = 1.0,
+    xGrid_upper = 30.0)
 
-    lambda_values = collect(lambda_lower_bound:step:lambda_upper_bound)
-    xGrid = 0.0:1.0:20.0
-    
+    lambda_values = collect(lambda_lower_bound:lambda_step:lambda_upper_bound)
+    xGrid = 0.0:xGrid_step:xGrid_upper
+
     # to calculate and plot values
     data_collection = [do_experiment_long(scenario, lambda) for lambda in lambda_values]
     ecdfs = ecdf.(data_collection)
@@ -114,35 +114,11 @@ function plot_times(scenario::NetworkParameters, title::String;
             hcat([df.(xGrid) for df in ecdfs]...),
             title = title,
             ylabel = "Cumulative Probability",
-            xlabel = "Time",
+            xlabel = "Sojourn Time",
             ylims = (0, 1.0),
-            #label =
-            ) 
+            label = permutedims(lambda_values[:,:]),
+            legendtitle = "λ Values",
+            legendtitlefontsize = 9,
+            legend = :bottomright)
     return plot_test
 end
-
-plot_times(scenario1, "Empirical CDF of Sojourn times of Scenario 1")
-
-#=
-sojourn_times_scenario1_lambda2 = do_experiment_long(scenario2, 5.0)
-empiricalCDF2 = ecdf(sojourn_times_scenario1_lambda2)
-plot!(xGrid, empiricalCDF2(xGrid),
-        c=:blue)
-=#
-# with lambda = 0.75 - see Provided_Parameters
-# println("With lambda = 0.75: ")
-
-
-# println("Scenario 1 park move integrals: ", integral1)
-# Random.seed!(0)
-# integral2, pars2 = do_experiment_long(scenario2)
-# println("Scenario 2 park move integrals: ", integral2)
-# Random.seed!(0)
-# integral3, pars3 = do_experiment_long(scenario3)
-# println("Scenario 3 park move integrals: ", integral3)
-# Random.seed!(0)
-# integral4, pars4 = do_experiment_long(scenario4)
-# println("Scenario 4 park move integrals: ", integral4) 
-# Random.seed!(0)
-# integral5, pars5 = do_experiment_long(scenario5)
-# println("Scenario 5 park move integrals: ", integral5)
