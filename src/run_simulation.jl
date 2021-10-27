@@ -1,7 +1,7 @@
 include("mode1.jl")
 include("mode2.jl")
 include("plot_all.jl")
-include("Provided_Parameters.jl")
+include("provided_parameters.jl")
 
 plot_all(scenario1, "Scenario 1")
 plot_all(scenario2, "Scenario 2", 
