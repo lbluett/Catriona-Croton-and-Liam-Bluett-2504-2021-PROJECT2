@@ -6,5 +6,3 @@ arrival_distribution_test2()
 
 routing_matrix_test()
 overflow_matrix_test()
-
-include("event_time_tests.jl")
