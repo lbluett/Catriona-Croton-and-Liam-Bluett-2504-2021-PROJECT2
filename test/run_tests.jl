@@ -1,4 +1,5 @@
 include("../src/mode1.jl")
+include("../src/mode2.jl")
 
 include("station_allocation_tests.jl")
 arrival_distribution_test()
